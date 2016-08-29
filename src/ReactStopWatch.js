@@ -24,7 +24,7 @@ class ReactStopWatch extends Component {
       elapsedSeconds: 0,
       elapsedTime: 0,
       totalTime: 0,
-      timeIntervals: null,
+      timeIntervals: [],
       isRunning: false
     }
   }
@@ -37,6 +37,11 @@ class ReactStopWatch extends Component {
         </View>
         <View style={Style.inputContainer}>
           { this._renderInputButtons() }
+        </View>
+        <View>
+          <Text>Intervals</Text>
+          <Text>{this.state.timeIntervals.join(' ')}</Text>
+          <InputButton value={'clear'} onPress={this._onInputButtonPress.bind(this, 'clear') }/>
         </View>
       </View>
     )
@@ -53,6 +58,12 @@ class ReactStopWatch extends Component {
 
     return views
 
+  }
+
+  _clearTimeIntervals() {
+    this.setState({
+      timeIntervals: []
+    })
   }
 
   _pauseStopwatch() {
@@ -87,17 +98,22 @@ class ReactStopWatch extends Component {
   }
 
   _stopStopwatch() {
+    let intervals = this.state.timeIntervals
+    intervals.push(this.state.elapsedTime)
     this.setState({
       elapsedMilliseconds: 0,
       elapsedSeconds: 0,
       elapsedTime: 0,
       isRunning: false,
+      timeIntervals: intervals,
       totalTime: this.state.elapsedTime
     })
   }
 
   _onInputButtonPress(input) {
     switch (input) {
+      case 'clear':
+        return this._clearTimeIntervals()
       case 'pause':
         return this._pauseStopwatch()
       case 'start':
